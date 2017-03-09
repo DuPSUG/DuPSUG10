@@ -15,4 +15,4 @@ BEGIN | END | SPEAKER | TITLE
 * [Carnac](http://code52.org/carnac/)
 * [GitHub - Carnac](https://github.com/Code52/carnac)
 * [ConvertTo-CompressedBase64](https://github.com/jaapbrasser/SharedScripts/blob/master/ConvertTo-CompressedBase64/ConvertTo-CompressedBase64.ps1)
-* [ConverTo-CompressedBase64 - ISEPlugin](https://github.com/jaapbrasser/UtilityScripts/blob/master/ISE/ConvertTo-CompressedIPAutomata.ps1)
+* [ConvertTo-CompressedBase64 - ISEPlugin](https://github.com/jaapbrasser/UtilityScripts/blob/master/ISE/ConvertTo-CompressedIPAutomata.ps1)
