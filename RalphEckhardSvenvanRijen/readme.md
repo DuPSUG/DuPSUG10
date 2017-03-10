@@ -1,4 +1,4 @@
-# Keep up with NOW! Automate rebuilding your (home)lab __on steroids__
+# Keep up with NOW! Automate rebuilding your (home)lab __on steroids__
 
 Thanks for having us @ DuPSUG 10 on 9th March 2017!
 
