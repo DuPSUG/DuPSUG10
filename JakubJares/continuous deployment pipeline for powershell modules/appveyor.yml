@@ -1,0 +1,24 @@
+version: 1.0.{build}
+image: WMF 5
+clone_folder: c:\projects\deepmind
+environment:
+  publishKey: e50ce3e3-cd5e-48e0-8c06-104ff5e7d247
+install:
+- ps: >-
+    Install-PackageProvider NuGet -MinimumVersion '2.8.5.201' -Force
+
+    Import-PackageProvider NuGet -MinimumVersion '2.8.5.201' -Force
+
+    Install-Module Pester -Force
+
+
+    . Helpers\AppveyorHelpers.ps1
+build_script:
+- ps: >-
+    Compress-Archive -Path . -DestinationPath DeepMind.zip -Force
+
+    Push-AppveyorArtifact DeepMind.zip
+test_script:
+- ps: "\"Commit tag:$env:APPVEYOR_REPO_TAG_NAME\"\n$tag = Parse-Tag -Tag $env:APPVEYOR_REPO_TAG_NAME\n$tag\n\n\nif ($tag.IsVersionTag -and !$tag.IsPrerelease) {\n    'Setting environment to Release.'\n    Set-Environment -Environment Release\n}\nelse {\n    'Running tests without release checks'\n}\n\n\n$result = Invoke-Pester -PassThru\nif ($result -eq $null)\n{\n    throw \"No test results available, did you run Invoke-Pester with -PassThru?\"\n}\n\n\n$result.TestResult | foreach { \n    Add-AppveyorTest -Framework Pester -Name $_.Name -FileName \"deepmind.tests.ps1\"`\n      -Outcome $_.Result -Duration $_.time.totalmilliseconds`\n      -ErrorMessage $_.FailureMessage -ErrorStackTrace $_.StackTrace\n}\n\n\nif ($result.FailedCount -ne 0)\n{\n    throw \"$($result.FailedCount) tests failed.\"\n}"
+deploy_script:
+- ps: "$tag = Parse-Tag -Tag $env:APPVEYOR_REPO_TAG_NAME\n\n\nif ($tag.IsVersionTag -and !$tag.IsPrerelease) {\n    \"Deploying module\"\n    Publish-Module -Path $pwd -NugetApiKey $env:publishKey\n}\nelse \n{\n    \"Skipping deployment\"\n}"
