@@ -46,7 +46,8 @@ New-AzureRmAutomationAccount -Name $AutomAccountName `
 
 #region Get AzureRM Registration Info
 
-Get-AzureRmAutomationRegistrationInfo -ResourceGroupName $resourcegroupname `                                      -AutomationAccountName $AutomAccountName
+Get-AzureRmAutomationRegistrationInfo -ResourceGroupName $resourcegroupname `
+                                      -AutomationAccountName $AutomAccountName
 
 #endregion Get AzureRM Registration Info
 
@@ -134,7 +135,7 @@ $ConfigData = @{
     AllNodes = @(             
         @{             
             Nodename = "*"             
-            DomainName = "svenvanrijen.eu"             
+            DomainName = "dupsug.com"             
             RetryCount = 20              
             RetryIntervalSec = 30
             ConfigurationMode = 'ApplyAndAutoCorrect'            
@@ -155,15 +156,23 @@ $ConfigData = @{
 
 Start-AzureRmAutomationDscCompilationJob -ResourceGroupName $resourcegroupname `
                                          -AutomationAccountName $AutomAccountName `
-                                         -ConfigurationName "DuPSUG_domain" `                                         -ConfigurationData $ConfigData
+                                         -ConfigurationName "DuPSUG_domain" `
+                                         -ConfigurationData $ConfigData
 
 #endregion compile config
 
 #region Get Job status
 
-Get-AzureRmAutomationJob -Id <fill me in> `                         -ResourceGroupName $resourcegroupname `                         -AutomationAccountName $AutomAccountName#endregion Get Job status#region Get DSC Node Configs
+Get-AzureRmAutomationJob -Id <fill me in> `
+                         -ResourceGroupName $resourcegroupname `
+                         -AutomationAccountName $AutomAccountName
 
-Get-AzureRmAutomationDscNodeConfiguration -ResourceGroupName $resourcegroupname `                                      -AutomationAccountName $AutomAccountName
+#endregion Get Job status
+
+#region Get DSC Node Configs
+
+Get-AzureRmAutomationDscNodeConfiguration -ResourceGroupName $resourcegroupname `
+                                      -AutomationAccountName $AutomAccountName
 
 #endregion Get DSC Node Configs
 
