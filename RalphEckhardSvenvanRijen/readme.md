@@ -6,6 +6,7 @@ Please find our slidedeck and demo material in this GitHub repo.
 Our New-LabEnvironment module can be found at the [PowerShell Gallery](https://www.powershellgallery.com/packages/NewLabEnvironment/) and [GitHub](https://github.com/ralpje/PowerShell-Lab-Module).
 
 I (Sven) will write a blogpost in the near future covering all the demo-steps in detail so you can play along.
+**EDIT** Blogpost is published and can be found [here](http://www.svenvanrijen.nl/Home-lab-automation-5/).
 
 You can find (and follow) us on Twitter:
 
