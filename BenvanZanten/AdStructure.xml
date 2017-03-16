@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<!--  Active Directory Domain Inventory  -->
+<forest name="PowerShellDemo.com" distinguishedName="DC=PowerShellDemo,DC=com">
+  <parameters>
+    <FFL>6</FFL>  <!-- FFL 6 = WS 2012 R2 -->
+    <FSMO>
+      <Schema>DC1</Schema>
+      <Naming>DC1</Naming>
+    </FSMO>
+  </parameters>
+  <sites>
+    <site name="Site1">
+      <NTDSSiteSettings/>
+      <servers>
+        <server name="DC1"/>
+      </servers>
+      <LicensingSiteSettings/>
+    </site>
+    <site name="Site2">
+      <NTDSSiteSettings/>
+      <servers>
+        <server name="DC2"/>
+      </servers>
+      <LicensingSiteSettings/>
+    </site>
+    <sitelinks>
+      <sitelink name="Site1-Site2">
+        <Description>Replication link Europe Site1 to Site2</Description>
+        <OtherAttributes>@{sitelist="CN=Site1,CN=Sites,CN=Configuration,DC=PowerShellDemo,DC=com","CN=Site2,CN=Sites,CN=Configuration,DC=PowerShellDemo,DC=com";replInterval=15;cost=10;options=1}</OtherAttributes>
+      </sitelink>
+    </sitelinks>
+  </sites>
+  <subnets>
+    <!-- DC LAN -->
+    <subnet name="192.168.40.0/24">
+      <OtherAttributes>@{siteObject=CN=Site1,CN=Sites,CN=Configuration,DC=PowerShellDemo,DC=com}</OtherAttributes>
+      <Description>DC LAN Site1</Description>
+    </subnet>
+    <subnet name="192.168.42.0/24">
+      <OtherAttributes>@{siteObject=CN=Site2,CN=Sites,CN=Configuration,DC=PowerShellDemo,DC=com}</OtherAttributes>
+      <Description>DC LAN Site2</Description>
+    </subnet>
+  </subnets>
+  <domains>
+    <domain name="PowerShellDemo" distinguishedName="DC=PowerShellDemo,DC=com" dnsname="PowerShellDemo.com">
+      <parameters>
+        <DFL>6</DFL>  <!-- DFL 6 = WS 2012 R2 -->
+        <FSMO>
+          <PDC>DC1</PDC>
+          <RID>DC1</RID>
+           <IM>DC1</IM>
+        </FSMO>
+      </parameters>
+      <DCs>
+        <DC name="DC1">
+          <DNS>
+            <Forwarders>
+              <IPAddress>8.8.8.8,8.8.4.4</IPAddress>
+              <UseRootHint>True</UseRootHint>
+              <TimeOut>4</TimeOut>
+              <EnableReordering>True</EnableReordering>
+            </Forwarders>
+            <ConditionalForwarders>
+            </ConditionalForwarders>
+          </DNS>
+		  <NICS>
+		    <NIC MacAddress="00-15-5D-10-40-04" Name="Ethernet">
+			  <NetIPAddress>
+			    <IPAddress>192.168.40.4</IPAddress>
+			    <PrefixLength>24</PrefixLength>
+			    <DefaultGateway>192.168.40.1</DefaultGateway>
+			  </NetIPAddress>
+			  <DnsClient>
+			    <ConnectionSpecificSuffix>lng.local</ConnectionSpecificSuffix>
+			  </DnsClient>
+			  <DnsClientServerAddress>
+			    <ServerAddresses>192.168.42.4,192.168.40.4</ServerAddresses>
+			  </DnsClientServerAddress>
+			</NIC>
+	      </NICS>
+
+        </DC>
+        <DC name="DC2">
+          <ReplicationSourceDC>DC1.PowerShellDemo.com</ReplicationSourceDC>
+          <DNS>
+            <Forwarders>
+              <IPAddress>8.8.8.8,8.8.4.4</IPAddress>
+              <UseRootHint>True</UseRootHint>
+              <TimeOut>5</TimeOut>
+              <EnableReordering>True</EnableReordering>
+            </Forwarders>
+            <ConditionalForwarders>
+            </ConditionalForwarders>
+          </DNS>
+		  <NICS>
+		    <NIC MacAddress="00-15-5D-10-42-04" Name="Ethernet">
+			  <NetIPAddress>
+			    <IPAddress>192.168.42.4</IPAddress>
+			    <PrefixLength>24</PrefixLength>
+			    <DefaultGateway>192.168.42.1</DefaultGateway>
+			  </NetIPAddress>
+			  <DnsClient>
+			    <ConnectionSpecificSuffix>lng.local</ConnectionSpecificSuffix>
+			  </DnsClient>
+			  <DnsClientServerAddress>
+			    <ServerAddresses>192.168.40.4,192.168.42.4</ServerAddresses>
+			  </DnsClientServerAddress>
+			</NIC>
+	      </NICS>
+        </DC>
+        <parameters>
+          <DatabasePath>C:\NTDS\Data</DatabasePath>
+               <LogPath>C:\NTDS\Log</LogPath>
+            <SysvolPath>C:\SYSVOL</SysvolPath>
+        </parameters>
+      </DCs>
+      <DNS>
+        <zones>
+          <zone name="PowerShellDemo.com">
+            <Aging>
+              <Aging>True</Aging>
+              <RefreshInterval>7.00:00:00</RefreshInterval>
+              <NoRefreshInterval>7.00:00:00</NoRefreshInterval>
+            </Aging>
+          </zone>
+          <zone name="_MSDCS.PowerShellDemo.com">
+            <Aging>
+              <Aging>True</Aging>
+              <RefreshInterval>7.00:00:00</RefreshInterval>
+              <NoRefreshInterval>7.00:00:00</NoRefreshInterval>
+            </Aging>
+          </zone>
+           <zone NetworkID="192.168.40.0/24">
+            <ReplicationScope>Domain</ReplicationScope>
+            <DynamicUpdate>Secure</DynamicUpdate>
+            <Aging>
+              <Aging>True</Aging>
+              <RefreshInterval>7.00:00:00</RefreshInterval>
+              <NoRefreshInterval>7.00:00:00</NoRefreshInterval>
+            </Aging>
+          </zone>
+           <zone NetworkID="192.168.42.0/24">
+            <ReplicationScope>Domain</ReplicationScope>
+            <DynamicUpdate>Secure</DynamicUpdate>
+            <Aging>
+              <Aging>True</Aging>
+              <RefreshInterval>7.00:00:00</RefreshInterval>
+              <NoRefreshInterval>7.00:00:00</NoRefreshInterval>
+            </Aging>
+          </zone>
+         </zones>
+      </DNS>
+      <OUs>
+        <OU name="Org">
+          <OU name="Groups" description="OU for Active Directory Groups">
+            <OU name="Administration" description="OU containing Administration Groups">
+                <!-- Example group with minimal properties set -->
+                <Group name="grp.MinGroup">
+                    <GroupScope>DomainLocal</GroupScope>
+                </Group>
+                 <!-- Example group with normal properties set -->
+                <Group name="grp.NormGroup">
+                    <GroupScope>Global</GroupScope>
+                     <AuthType>Negotiate</AuthType>
+                    <Description>Beschrijving grp.NormGroup</Description>
+                    <DisplayName>Display name group grp.NormGroup</DisplayName>
+                    <GroupCategory>Security</GroupCategory>
+                    <SamAccountName>grp.NormGroup</SamAccountName>
+                </Group>
+                 <!-- Example Distribution group with normal properties set -->
+                <Group name="grp.DistrGroup">
+                    <GroupScope>Global</GroupScope>
+                     <AuthType>Negotiate</AuthType>
+                    <Description>Beschrijving grp.DistrGroup</Description>
+                    <DisplayName>Display name group grp.DistrGroup</DisplayName>
+                    <GroupCategory>Distribution</GroupCategory>
+                    <SamAccountName>grp.DistrGroup</SamAccountName>
+                </Group>
+                <!-- Example group with maximum properties set -->
+                <Group name="grp.MaxGroup">
+                    <GroupScope>Universal</GroupScope>
+                     <AuthType>Negotiate</AuthType>
+                    <Description>Beschrijving grp.MaxGroup</Description>
+                    <DisplayName>Display name group grp.MaxGroup</DisplayName>
+                    <GroupCategory>Security</GroupCategory>
+                    <HomePage>http://groups.demo.local/grp.MaxGroup</HomePage>
+                    <ManagedBy>usr.Minimal</ManagedBy>
+                    <OtherAttributes>@{adminDescription="PowerShell created account";info=notes onderin;mail=DemoGroup@PowerShellDemo.com}</OtherAttributes>
+                    <SamAccountName>grp.MaxGroup</SamAccountName>
+                 </Group>
+            </OU>
+            <OU name="Application" description="OU containing Application Groups" />
+            <OU name="Authorisation" description="OU containing Authorisation Groups" />
+            <OU name="Distribution" description="OU containing Exchange Distribution Groups" />
+            <OU name="General" description="OU containing General Groups" />
+        </OU>
+          <OU name="Accounts" description="OU for Active Directory Accounts">
+            <OU name="Service" description="OU containing Service Accounts">
+                <!-- A user account with minimal properties set... -->
+                <User name="usr.Minimal">
+                </User>
+                 <!-- A service account with optimal properties set for a service account -->
+                <User name="usr.Optimal">
+                    <SamAccountName>usr.Optimal</SamAccountName>
+                    <UserPrincipalName>usr.Optimal@PowerShellDemo.com</UserPrincipalName>
+                    <Description>Beschrijving Optimale settings service account</Description>
+                    <DisplayName>DisplayName svc Optimal</DisplayName>
+                    <Enabled>True</Enabled>
+                    <Password>*</Password>
+                    <CannotChangePassword>True</CannotChangePassword>
+                    <PasswordNeverExpires>True</PasswordNeverExpires>
+                </User>
+                 <!-- A user account with optimal properties set for a normal user account -->
+                <User name="usr.Optimal">
+                    <SamAccountName>usr.Optimal</SamAccountName>
+                    <UserPrincipalName>usr.Optimal@PowerShellDemo.com</UserPrincipalName>
+                    <Description>Beschrijving Optimale settings user account</Description>
+                    <DisplayName>DisplayName usr Optimal</DisplayName>
+                    <GivenName>usr</GivenName>
+                    <SurName>Optimal</SurName>
+                    <Enabled>True</Enabled>
+                    <Password>*</Password>
+                </User>
+                 <!-- A user account with maximum number of properties set for a normal user account -->
+                <User name="usr.Maximal">
+                    <AccountExpirationDate>2012-01-02T14:13:12.0000000</AccountExpirationDate>
+                    <AccountNotDelegated>True</AccountNotDelegated>
+                    <AccountPassword>*</AccountPassword>
+                    <AllowReversiblePasswordEncryption>True</AllowReversiblePasswordEncryption>
+                    <AuthType>Negotiate</AuthType>
+                    <CannotChangePassword>True</CannotChangePassword>
+                    <ChangePasswordAtLogon>True</ChangePasswordAtLogon>
+                    <City>Stad</City>
+                    <Company>Bedrijf</Company>
+                    <CompoundIdentitySupported>True</CompoundIdentitySupported>
+                    <Country>NL</Country>
+                    <Department>Afdeling</Department>
+                    <Description>Fully populated user account with all possible values filled.</Description>
+                    <DisplayName>Display usr.Maximal</DisplayName>
+                    <Division>Divisie</Division>
+                    <EmailAddress>Email@address.nl</EmailAddress>
+                    <EmployeeID>12345</EmployeeID>
+                    <EmployeeNumber>45</EmployeeNumber>
+                    <Enabled>True</Enabled>
+                    <Fax>040-4567890</Fax>
+                    <GivenName>Voornaam</GivenName>
+                    <HomeDirectory>\\Server1\Home$\User</HomeDirectory>
+                    <HomeDrive>M:</HomeDrive>
+                    <HomePage>http:\\Server1\MyHome</HomePage>
+                    <HomePhone>040-1234567</HomePhone>
+                    <Initials>I.n.i.</Initials>
+                    <KerberosEncryptionType>AES256</KerberosEncryptionType>
+                    <LogonWorkstations>WS1,ws2,ws3</LogonWorkstations>
+                    <Manager>usr.Minimal</Manager>
+                    <MobilePhone>06-12345678</MobilePhone>
+                    <Office>Kantoor</Office>
+                    <OfficePhone>040-23456789</OfficePhone>
+                    <Organization>Organisatie</Organization>
+                    <OtherAttributes>@{adminDescription="PowerShell created account";departmentNumber=12;roomNumber=RoomC2-12}</OtherAttributes>
+                    <OtherName>Andere naam</OtherName>
+                    <PasswordNeverExpires>False</PasswordNeverExpires>
+                    <PasswordNotRequired>False</PasswordNotRequired>
+                    <POBox>Postbus 12</POBox>
+                    <PostalCode>1234 AB</PostalCode>
+                    <PrincipalsAllowedToDelegateToAccount>usr.Minimal</PrincipalsAllowedToDelegateToAccount>
+                    <ProfilePath>\\Server1\Profiles\User</ProfilePath>
+                    <SamAccountName>usr.Maximal</SamAccountName>
+                    <ScriptPath>\\Server1\Scripts\LogonUser.vbs</ScriptPath>
+                    <SmartcardLogonRequired>True</SmartcardLogonRequired>
+                    <State>Provincie</State>
+                    <StreetAddress>Adreslaan 1</StreetAddress>
+                    <Surname>Achternaam</Surname>
+                    <Title>Titel</Title>
+                    <TrustedForDelegation>True</TrustedForDelegation>
+                    <Type>user</Type>
+                    <UserPrincipalName>usr.Maximal@PowerShellDemo.com</UserPrincipalName>
+<!--
+                    <ServicePrincipalNames>@{Add=HOST/Maximal}</ServicePrincipalNames>
+-->
+                    <GroupMembership>
+                      <MemberOf name="grp.MinGroup" />
+                      <MemberOf name="grp.NormGroup" />
+                      <MemberOf name="grp.MaxGroup" />
+                      <MemberOf name="grp.DistrGroup" />
+                    </GroupMembership>
+                </User>
+            </OU>
+          </OU>
+          <OU name="Resources" description="OU for Resources">
+            <OU name="Servers" description="OU for Servers">
+              <OU name="Application" description="OU for Application servers">
+              </OU>
+              <OU name="Database" description="OU for Database servers">
+              </OU>
+            </OU>
+          </OU>
+        </OU>
+      </OUs>
+    </domain>
+   </domains>
+</forest>
+
